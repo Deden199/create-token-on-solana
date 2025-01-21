@@ -13,7 +13,7 @@ interface WalletContextProps {
 }
 
 export const WalletContextProvider: React.FC<WalletContextProps> = ({ children }) => {
-  const network = 'devnet'; // Ganti dengan 'mainnet-beta' jika diperlukan
+  const network = 'mainnet-beta'; // Ganti dengan 'mainnet-beta' jika diperlukan
   const endpoint = clusterApiUrl(network);
 
   const wallets = useMemo(
