@@ -56,7 +56,7 @@ export default function HomePage() {
           />
           <meta property="og:url" content="https://solradian.com" />
           <meta property="og:type" content="website" />
-          <meta property="og:image" content="https://solradian.com/hero.webp" />
+          <meta property="og:image" content="https://solradian.com/solradian.webp" />
 
           {/* Twitter Card Tags */}
           <meta name="twitter:card" content="summary_large_image" />
@@ -65,7 +65,7 @@ export default function HomePage() {
             name="twitter:description"
             content="Empower your blockchain projects with Solradian's Developer Tools. Easily create tokens on Solana with low fees and fast transactions."
           />
-          <meta name="twitter:image" content="https://solradian.com/images/hero.webp" />
+          <meta name="twitter:image" content="https://solradian.com/images/solradian.webp" />
 
           {/* Structured Data (JSON-LD) */}
           <script
