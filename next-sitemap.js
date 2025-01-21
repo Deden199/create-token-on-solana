@@ -1,7 +1,7 @@
 // next-sitemap.js
 
 module.exports = {
-    siteUrl: 'https://xrplquantum.com',
+    siteUrl: 'https://solradian.com',
     generateRobotsTxt: true, // (optional)
   };
   
