@@ -3,7 +3,7 @@ import React from "react";
 import Head from "next/head";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { WalletContextProvider } from './wallet';
+import { WalletContextProvider } from '../contexts/wallet';
 import dynamic from "next/dynamic";
 import ParticleBackground from '@/components/ParticleBackground';
 
