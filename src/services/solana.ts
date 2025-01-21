@@ -49,8 +49,8 @@ import {
   
       // 1. Upload Metadata to Pinata
       console.log("Uploading metadata to Pinata...");
-      const pinataApiKey = process.env.REACT_APP_PINATA_API_KEY;
-      const pinataSecretApiKey = process.env.REACT_APP_PINATA_SECRET_API_KEY;
+      const pinataApiKey = process.env.PINATA_API_KEY;
+      const pinataSecretApiKey = process.env.PINATA_SECRET_API_KEY;
   
       if (!pinataApiKey || !pinataSecretApiKey) {
         throw new Error("Pinata API keys are not set.");
