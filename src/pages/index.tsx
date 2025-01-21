@@ -25,10 +25,7 @@ export default function HomePage() {
         <Head>
           
           {/* Google Site Verification */}
-          <meta
-            name="google-site-verification"
-            content="1UIYNjsnw0nZxvpxJryHB5xLSPWtYtS0FU4fvSTCFs0"
-          />
+          <meta name="google-site-verification" content="Sc3skyzNLhxTCKMDl4Eb2Txa8G3QiR6jbs3dGfycQ-M" />
 
           {/* Title of the main page */}
           <title>Create Token on Solana - Solradian.com</title>
