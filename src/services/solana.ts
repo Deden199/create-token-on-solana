@@ -5,9 +5,7 @@ import {
     PublicKey,
     SystemProgram,
     Transaction,
-    TransactionSignature,
     Keypair,
-    LAMPORTS_PER_SOL,
   } from "@solana/web3.js";
   import {
     TOKEN_PROGRAM_ID,
@@ -17,46 +15,32 @@ import {
     createMintToInstruction,
   } from "@solana/spl-token";
   import axios from "axios";
+  import FormData from "form-data";
+  import fs from "fs";
   
-  interface Props {
-    publicKey: PublicKey;
-    signTransaction: (tx: Transaction) => Promise<Transaction>;
+  interface UploadMetadataProps {
     tokenName: string;
     symbol: string;
-    decimals: number;
-    supply: number;
     description: string;
-    imageFile: File;
+    imageFile: fs.ReadStream;
   }
   
-  export async function sendSolFeeAndCreateToken({
-    publicKey,
-    signTransaction,
+  export async function uploadMetadata({
     tokenName,
     symbol,
-    decimals,
-    supply,
     description,
     imageFile,
-  }: Props): Promise<{
-    transactionSig: TransactionSignature;
-    mintedTokenPubkey: string;
-  }> {
+  }: UploadMetadataProps): Promise<string> {
     try {
-      console.log("Initializing connection to Solana RPC...");
-      const rpcUrl = `https://dark-black-seed.solana-mainnet.quiknode.pro/df2f3bde597639f8f7cbdbe7658aad8c56447300`;
-      const connection = new Connection(rpcUrl, "confirmed");
+      // Verifikasi environment variables
+      if (!process.env.PINATA_API_KEY || !process.env.PINATA_SECRET_API_KEY) {
+        throw new Error("Required environment variables are not set.");
+      }
   
-      // 1. Upload Metadata to Pinata
-      console.log("Uploading metadata to Pinata...");
       const pinataApiKey = process.env.PINATA_API_KEY;
       const pinataSecretApiKey = process.env.PINATA_SECRET_API_KEY;
   
-      if (!pinataApiKey || !pinataSecretApiKey) {
-        throw new Error("Pinata API keys are not set.");
-      }
-  
-      // Upload image to Pinata
+      // Upload gambar ke Pinata
       const imageFormData = new FormData();
       imageFormData.append("file", imageFile);
   
@@ -65,7 +49,7 @@ import {
         imageFormData,
         {
           headers: {
-            "Content-Type": "multipart/form-data",
+            ...imageFormData.getHeaders(),
             pinata_api_key: pinataApiKey,
             pinata_secret_api_key: pinataSecretApiKey,
           },
@@ -74,16 +58,9 @@ import {
   
       const imageHash = imageResponse.data.IpfsHash;
       const imageUrl = `https://gateway.pinata.cloud/ipfs/${imageHash}`;
-      console.log("Image successfully uploaded to Pinata:", imageUrl);
   
-      // Upload metadata to Pinata
-      const metadata = {
-        name: tokenName,
-        symbol: symbol,
-        description: description,
-        image: imageUrl,
-      };
-  
+      // Upload metadata ke Pinata
+      const metadata = { name: tokenName, symbol, description, image: imageUrl };
       const metadataResponse = await axios.post(
         "https://api.pinata.cloud/pinning/pinJSONToIPFS",
         metadata,
@@ -96,132 +73,128 @@ import {
         }
       );
   
-      const metadataHash = metadataResponse.data.IpfsHash;
-      const metadataUri = `https://gateway.pinata.cloud/ipfs/${metadataHash}`;
-      console.log("Metadata successfully uploaded to Pinata:", metadataUri);
+      const metadataUri = `https://gateway.pinata.cloud/ipfs/${metadataResponse.data.IpfsHash}`;
+      return metadataUri;
+    } catch (error: any) {
+      console.error("Error in uploadMetadata:", error.response?.data || error.message);
+      throw new Error(error.response?.data?.message || error.message);
+    }
+  }
   
-      // 2. Send Fee 0.1 SOL
-      console.log("Sending 0.1 SOL fee to platform wallet...");
-      const platformWallet = new PublicKey(
-        "CPoKYe7fsWLkXMKwDnCh78NChd6a6HZEBE5JA5JvuCGs"
-      );
-      const lamports = Math.floor(0.1 * LAMPORTS_PER_SOL);
+  export async function createTokenFromPlatform({
+    recipientPublicKey,
+    tokenName,
+    symbol,
+    decimals,
+    supply,
+  }: {
+    recipientPublicKey: string;
+    tokenName: string;
+    symbol: string;
+    decimals: number;
+    supply: number;
+  }): Promise<{
+    mintAddress: string;
+    transactionSig: string;
+  }> {
+    try {
+      if (!process.env.PLATFORM_PRIVATE_KEY) {
+        throw new Error("Platform private key is not set.");
+      }
   
-      const feeTransferTx = new Transaction().add(
-        SystemProgram.transfer({
-          fromPubkey: publicKey,
-          toPubkey: platformWallet,
-          lamports,
-        })
-      );
+      // Konversi private key string ke Keypair
+      const privateKeyArray = process.env.PLATFORM_PRIVATE_KEY.split(",").map(Number);
+      const platformKeypair = Keypair.fromSecretKey(new Uint8Array(privateKeyArray));
   
-      feeTransferTx.feePayer = publicKey;
-      feeTransferTx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+      const rpcUrl = process.env.SOLANA_RPC_URL;
+      const connection = new Connection(rpcUrl, "confirmed");
   
-      const signedFeeTransferTx = await signTransaction(feeTransferTx);
-      const feeSignature = await connection.sendRawTransaction(
-        signedFeeTransferTx.serialize()
-      );
-      await connection.confirmTransaction(feeSignature, "confirmed");
-  
-      console.log("Fee transfer successful:", feeSignature);
-  
-      // 3. Create Token Mint
-      console.log("Creating SPL Token (Mint)...");
       const mintKeypair = Keypair.generate();
-      const mintPublicKey = mintKeypair.publicKey;
+      const rentExemption = await connection.getMinimumBalanceForRentExemption(82);
   
-      const rentExemption = await connection.getMinimumBalanceForRentExemption(
-        82
+      // Create Mint Transaction
+      const createMintTx = new Transaction().add(
+        SystemProgram.createAccount({
+          fromPubkey: platformKeypair.publicKey,
+          newAccountPubkey: mintKeypair.publicKey,
+          space: 82,
+          lamports: rentExemption,
+          programId: TOKEN_PROGRAM_ID,
+        }),
+        createInitializeMintInstruction(
+          mintKeypair.publicKey,
+          decimals,
+          platformKeypair.publicKey,
+          platformKeypair.publicKey
+        )
       );
   
-      const createMintAccountIx = SystemProgram.createAccount({
-        fromPubkey: publicKey,
-        newAccountPubkey: mintPublicKey,
-        space: 82,
-        lamports: rentExemption,
-        programId: TOKEN_PROGRAM_ID,
-      });
+      createMintTx.feePayer = platformKeypair.publicKey;
+      createMintTx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
   
-      const initializeMintIx = createInitializeMintInstruction(
-        mintPublicKey,
-        decimals,
-        publicKey,
-        publicKey
-      );
+      // Tanda tangani transaksi menggunakan partialSign
+      createMintTx.partialSign(platformKeypair, mintKeypair);
   
-      const createAndInitMintTx = new Transaction().add(
-        createMintAccountIx,
-        initializeMintIx
-      );
+      const createMintSig = await connection.sendRawTransaction(createMintTx.serialize());
+      await connection.confirmTransaction(createMintSig, "confirmed");
   
-      createAndInitMintTx.feePayer = publicKey;
-      createAndInitMintTx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+      console.log("Mint created:", createMintSig);
   
-      const signedCreateAndInitMintTx = await signTransaction(
-        createAndInitMintTx
-      );
-      const mintSignature = await connection.sendRawTransaction(
-        signedCreateAndInitMintTx.serialize()
-      );
-      await connection.confirmTransaction(mintSignature, "confirmed");
-  
-      console.log("Mint created successfully:", mintSignature);
-  
-      // 4. Create ATA (Associated Token Account)
-      console.log("Creating Associated Token Account (ATA)...");
+      // Create Associated Token Account (ATA) untuk penerima
+      const recipientPubkey = new PublicKey(recipientPublicKey);
       const ataPublicKey = await getAssociatedTokenAddress(
-        mintPublicKey,
-        publicKey
+        mintKeypair.publicKey,
+        recipientPubkey
       );
   
-      const createATAIx = createAssociatedTokenAccountInstruction(
-        publicKey,
-        ataPublicKey,
-        publicKey,
-        mintPublicKey
+      const createATATx = new Transaction().add(
+        createAssociatedTokenAccountInstruction(
+          platformKeypair.publicKey,
+          ataPublicKey,
+          recipientPubkey,
+          mintKeypair.publicKey
+        )
       );
   
-      const createATATx = new Transaction().add(createATAIx);
-      createATATx.feePayer = publicKey;
+      createATATx.feePayer = platformKeypair.publicKey;
       createATATx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
   
-      const signedCreateATATx = await signTransaction(createATATx);
-      const ataSignature = await connection.sendRawTransaction(
-        signedCreateATATx.serialize()
+      // Tanda tangani transaksi ATA menggunakan partialSign
+      createATATx.partialSign(platformKeypair);
+  
+      const ataSig = await connection.sendRawTransaction(createATATx.serialize());
+      await connection.confirmTransaction(ataSig, "confirmed");
+  
+      console.log("ATA created:", ataSig);
+  
+      // Mint tokens ke ATA
+      const mintToTx = new Transaction().add(
+        createMintToInstruction(
+          mintKeypair.publicKey,
+          ataPublicKey,
+          platformKeypair.publicKey,
+          supply * Math.pow(10, decimals)
+        )
       );
-      await connection.confirmTransaction(ataSignature, "confirmed");
   
-      console.log("ATA created successfully:", ataSignature);
-  
-      // 5. Mint Token to ATA
-      console.log(`Minting ${supply} tokens to ATA...`);
-      const mintToIx = createMintToInstruction(
-        mintPublicKey,
-        ataPublicKey,
-        publicKey,
-        supply * Math.pow(10, decimals)
-      );
-  
-      const mintToTx = new Transaction().add(mintToIx);
-      mintToTx.feePayer = publicKey;
+      mintToTx.feePayer = platformKeypair.publicKey;
       mintToTx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
   
-      const signedMintToTx = await signTransaction(mintToTx);
-      const mintToSignature = await connection.sendRawTransaction(
-        signedMintToTx.serialize()
-      );
-      await connection.confirmTransaction(mintToSignature, "confirmed");
+      // Tanda tangani transaksi minting menggunakan partialSign
+      mintToTx.partialSign(platformKeypair);
   
-      console.log("Minting successful:", mintToSignature);
+      const mintToSig = await connection.sendRawTransaction(mintToTx.serialize());
+      await connection.confirmTransaction(mintToSig, "confirmed");
+  
+      console.log("Tokens minted:", mintToSig);
   
       return {
-        transactionSig: mintToSignature,
-        mintedTokenPubkey: mintPublicKey.toBase58(),
+        mintAddress: mintKeypair.publicKey.toBase58(),
+        transactionSig: mintToSig,
       };
     } catch (error: any) {
-      console.error("Error in sendSolFeeAndCreateToken:", error);
-      throw new Error(error.message);
+      console.error("Error in createTokenFromPlatform:", error.response?.data || error.message);
+      throw new Error(error.response?.data?.message || error.message);
     }
   }
   

@@ -2,7 +2,14 @@
 
 import React, { useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { sendSolFeeAndCreateToken } from "../services/solana"; // Adjust the import path as needed
+import axios from "axios";
+import {
+  Connection,
+  PublicKey,
+  Transaction,
+  SystemProgram,
+  LAMPORTS_PER_SOL,
+} from "@solana/web3.js";
 
 const CreateToken: React.FC = () => {
   const { publicKey, signTransaction } = useWallet();
@@ -49,53 +56,92 @@ const CreateToken: React.FC = () => {
       return;
     }
 
-    // Form Validation
-    if (!tokenName.trim()) {
-      alert("Token Name is required.");
-      return;
-    }
-    if (!symbol.trim()) {
-      alert("Symbol is required.");
-      return;
-    }
-    if (decimals < 0 || decimals > 9) {
-      alert("Decimals must be between 0 and 9.");
-      return;
-    }
-    if (supply <= 0) {
-      alert("Supply must be greater than 0.");
-      return;
-    }
-    if (!description.trim()) {
-      alert("Description is required.");
-      return;
-    }
-    if (!image) {
-      alert("Token Image is required.");
+    // Validasi Formulir
+    if (!tokenName.trim() || !symbol.trim() || !description.trim() || !image) {
+      alert("Please fill out all required fields.");
       return;
     }
 
     try {
       setIsLoading(true);
-      setStatus("Preparing transaction...");
+      setStatus("Uploading metadata...");
 
-      const result = await sendSolFeeAndCreateToken({
-        publicKey,
-        signTransaction,
+      // Unggah metadata melalui API route
+      const formData = new FormData();
+      formData.append("tokenName", tokenName);
+      formData.append("symbol", symbol);
+      formData.append("description", description);
+      formData.append("imageFile", image); // Pastikan nama field adalah "imageFile"
+
+      console.log("Form Data Preview:", Object.fromEntries(formData.entries()));
+
+      const uploadResponse = await axios.post("/api/upload-metadata", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      const { metadataUri } = uploadResponse.data;
+      setStatus("Metadata uploaded. Sending fee...");
+
+      // Kirim 0.1 SOL dari pengguna ke platform wallet
+      const connection = new Connection(process.env.NEXT_PUBLIC_SOLANA_RPC_URL as string, "confirmed");
+      console.log("Checking user balance...");
+      const userBalance = await connection.getBalance(publicKey);
+      if (userBalance < 0.1 * LAMPORTS_PER_SOL) {
+        alert("Your wallet balance is insufficient to pay the fee. Please top up your wallet.");
+        return;
+      }
+      const platformWallet = new PublicKey(process.env.NEXT_PUBLIC_PLATFORM_WALLET_ADDRESS as string);
+      const lamports = Math.floor(0.1 * LAMPORTS_PER_SOL); // 0.1 SOL
+
+      const feeTransferTx = new Transaction().add(
+        SystemProgram.transfer({
+          fromPubkey: publicKey,
+          toPubkey: platformWallet,
+          lamports,
+        })
+      );
+
+      feeTransferTx.feePayer = publicKey;
+      feeTransferTx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+
+      const signedFeeTransferTx = await signTransaction(feeTransferTx);
+      const feeSignature = await connection.sendRawTransaction(
+        signedFeeTransferTx.serialize()
+      );
+      await connection.confirmTransaction(feeSignature, "confirmed");
+
+      console.log("Fee transfer succes:", feeSignature);
+      setTxHash(feeSignature);
+      setStatus("Fee transfer succes. Creating token...");
+
+      // Buat token menggunakan API route
+      const createTokenResponse = await axios.post("/api/create-token", {
+        recipientPublicKey: publicKey.toBase58(),
         tokenName,
         symbol,
         decimals,
         supply,
-        description,
-        imageFile: image,
       });
 
-      setTxHash(result.transactionSig);
-      setMintAddress(result.mintedTokenPubkey);
+      const { mintAddress, transactionSig } = createTokenResponse.data;
+
+      setMintAddress(mintAddress);
+      setTxHash(transactionSig);
       setStatus("Token successfully created!");
     } catch (error: any) {
       console.error("Error in CreateToken:", error);
-      setStatus(`Creation failed: ${error.message}`);
+      if (error.response) {
+        // Server responded dengan status lain selain 2xx
+        setStatus(`Creation failed: ${error.response.data.message || error.response.statusText}`);
+      } else if (error.request) {
+        // Permintaan dibuat tapi tidak ada respons
+        setStatus("Creation failed: No response from server.");
+      } else {
+        // Sesuatu yang lain terjadi
+        setStatus(`Creation failed: ${error.message}`);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -108,7 +154,7 @@ const CreateToken: React.FC = () => {
         <p className="text-center text-gray-300 mb-8">
           Fill out the form below to create your own SPL Token with metadata.
         </p>
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
           <div>
             <label className="block text-sm font-medium mb-2">Token Name</label>
             <input
