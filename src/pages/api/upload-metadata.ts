@@ -1,9 +1,8 @@
 // src/pages/api/upload-metadata.ts
 
 import type { NextApiRequest, NextApiResponse } from "next";
-import formidable, { File } from "formidable";
+import formidable from "formidable";
 import fs from "fs";
-import path from "path";
 import { uploadMetadata } from "../../services/solana";
 
 // Disable Next.js default body parser untuk mendukung unggahan file
@@ -15,12 +14,7 @@ export const config = {
 
 // Helper function untuk parsing form data menggunakan formidable
 const parseForm = (req: NextApiRequest): Promise<{ fields: formidable.Fields; files: formidable.Files }> => {
-  const uploadDir = path.join(process.cwd(), "tmp"); // Path absolut ke folder tmp
-
-  // Pastikan folder tmp ada
-  if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-  }
+  const uploadDir = "/tmp"; // Gunakan direktori /tmp langsung
 
   const form = formidable({
     multiples: false, // Hanya mengizinkan satu file
