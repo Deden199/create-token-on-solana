@@ -30,13 +30,13 @@ export default function HomePage() {
           {/* Updated Meta Description */}
           <meta
             name="description"
-            content="Enter the innovative world of Solradian: Where futuristic blockchain innovation meets advanced developer tools. Create your own SPL token on Solana with cutting-edge features."
+            content="Solradian menyediakan solusi blockchain yang praktis dan mudah digunakan untuk mengelola SPL token di Solana."
           />
 
           {/* Updated Meta Keywords */}
           <meta
             name="keywords"
-            content="Solana, SPL Token, Blockchain, Solradian, Developer Tools, Token Creation, Future, Roadmap"
+            content="Solana, SPL Token, Blockchain, Solradian, Developer Tools, Token Creation"
           />
 
           {/* Canonical URL */}
@@ -46,7 +46,7 @@ export default function HomePage() {
           <meta property="og:title" content="Solradian - Blockchain Revolution" />
           <meta
             property="og:description"
-            content="Enter the innovative world of Solradian. Create and launch your own SPL token on Solana with our advanced developer tools and modern design."
+            content="Solradian menyediakan solusi blockchain yang praktis dan mudah digunakan untuk mengelola SPL token di Solana."
           />
           <meta property="og:url" content="https://solradian.com" />
           <meta property="og:type" content="website" />
@@ -57,7 +57,7 @@ export default function HomePage() {
           <meta name="twitter:title" content="Solradian - Blockchain Revolution" />
           <meta
             name="twitter:description"
-            content="Step into the future with Solradian's innovative blockchain solutions. Create your SPL token on Solana with ease and style."
+            content="Solradian menyediakan solusi blockchain yang praktis dan mudah digunakan untuk mengelola SPL token di Solana."
           />
           <meta name="twitter:image" content="https://solradian.com/images/solradian.webp" />
 
@@ -71,7 +71,7 @@ export default function HomePage() {
                 "url": "https://solradian.com",
                 "name": "Solradian",
                 "description":
-                  "Enter the innovative world of Solradian. Explore futuristic blockchain innovation and create your own SPL token on Solana.",
+                  "Solradian menyediakan solusi blockchain yang praktis dan mudah digunakan untuk mengelola SPL token di Solana.",
                 "publisher": {
                   "@type": "Organization",
                   "name": "Solradian",
@@ -99,16 +99,16 @@ export default function HomePage() {
         {/* Hero Section */}
         <section className="text-center py-12 bg-gradient-to-b from-gray-900 to-gray-800 animate-fade">
           <h2 className="text-4xl md:text-5xl font-extrabold mb-4 md:mb-6 text-pink-500 drop-shadow-xl">
-            Unleash Your Token for the Future
+            Kelola Token Anda dengan Mudah
           </h2>
           <p className="max-w-xl text-base md:text-lg mx-auto leading-relaxed mb-6 md:mb-8 text-gray-300">
-            Dive into the world of Solradian. Create your own SPL token on Solana with our futuristic, developer-centric tools—designed for the next generation of blockchain projects.
+            Solradian hadir dengan solusi blockchain yang praktis untuk membantu Anda mengelola SPL token di Solana.
           </p>
           <a
-            href="https://app.binance.com/uni-qr/cart/19329812857921?isst=1&l=en&r=86987631&uc=web_square_share_link&uco=iBxCMe2QYRNVBYGvj3RgbA&us=copylink"
+            href="https://pump.fun/coin/9oj7fxjBZ1pXe1WAYgTzJV59HFy13Ux4bKW3oDnQpump"
             className="px-5 md:px-6 py-2 md:py-3 bg-pink-500 text-sm md:text-lg font-semibold text-white rounded-md shadow-lg btn-glow hover:bg-pink-600 transition"
           >
-            Learn More
+            Buy SLR
           </a>
         </section>
 
