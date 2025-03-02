@@ -30,7 +30,7 @@ export default function HomePage() {
           {/* Updated Meta Description */}
           <meta
             name="description"
-            content="Solradian menyediakan solusi blockchain yang praktis dan mudah digunakan untuk mengelola SPL token di Solana."
+            content="Solradian offers a practical blockchain solution for managing SPL tokens on Solana."
           />
 
           {/* Updated Meta Keywords */}
@@ -46,7 +46,7 @@ export default function HomePage() {
           <meta property="og:title" content="Solradian - Blockchain Revolution" />
           <meta
             property="og:description"
-            content="Solradian menyediakan solusi blockchain yang praktis dan mudah digunakan untuk mengelola SPL token di Solana."
+            content="Solradian offers a practical blockchain solution for managing SPL tokens on Solana."
           />
           <meta property="og:url" content="https://solradian.com" />
           <meta property="og:type" content="website" />
@@ -57,7 +57,7 @@ export default function HomePage() {
           <meta name="twitter:title" content="Solradian - Blockchain Revolution" />
           <meta
             name="twitter:description"
-            content="Solradian menyediakan solusi blockchain yang praktis dan mudah digunakan untuk mengelola SPL token di Solana."
+            content="Solradian offers a practical blockchain solution for managing SPL tokens on Solana."
           />
           <meta name="twitter:image" content="https://solradian.com/images/solradian.webp" />
 
@@ -71,7 +71,7 @@ export default function HomePage() {
                 "url": "https://solradian.com",
                 "name": "Solradian",
                 "description":
-                  "Solradian menyediakan solusi blockchain yang praktis dan mudah digunakan untuk mengelola SPL token di Solana.",
+                  "Solradian offers a practical blockchain solution for managing SPL tokens on Solana.",
                 "publisher": {
                   "@type": "Organization",
                   "name": "Solradian",
@@ -99,10 +99,10 @@ export default function HomePage() {
         {/* Hero Section */}
         <section className="text-center py-12 bg-gradient-to-b from-gray-900 to-gray-800 animate-fade">
           <h2 className="text-4xl md:text-5xl font-extrabold mb-4 md:mb-6 text-pink-500 drop-shadow-xl">
-            Kelola Token Anda dengan Mudah
+            Manage Your Tokens with Ease
           </h2>
           <p className="max-w-xl text-base md:text-lg mx-auto leading-relaxed mb-6 md:mb-8 text-gray-300">
-            Solradian hadir dengan solusi blockchain yang praktis untuk membantu Anda mengelola SPL token di Solana.
+            Solradian provides a practical blockchain solution to help you manage your SPL tokens on Solana.
           </p>
           <a
             href="https://pump.fun/coin/9oj7fxjBZ1pXe1WAYgTzJV59HFy13Ux4bKW3oDnQpump"
@@ -133,14 +133,16 @@ export default function HomePage() {
               <h4 className="text-2xl font-semibold text-pink-500 mb-3">
                 Lightning Speed
               </h4>
-              <p className="text-gray-300">Complete transactions in mere seconds.</p>
+              <p className="text-gray-300">
+                Complete transactions in seconds.
+              </p>
             </div>
             <div className="feature-item">
               <h4 className="text-2xl font-semibold text-pink-500 mb-3">
                 Seamless Integration
               </h4>
               <p className="text-gray-300">
-                Instantly add your tokens to liquidity pools without hassle.
+                Easily add your tokens to liquidity pools.
               </p>
             </div>
             <div className="feature-item">
@@ -148,7 +150,7 @@ export default function HomePage() {
                 Scalability
               </h4>
               <p className="text-gray-300">
-                Support thousands of transactions per second.
+                Support for thousands of transactions per second.
               </p>
             </div>
           </div>
