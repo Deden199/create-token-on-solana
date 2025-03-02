@@ -1,4 +1,3 @@
-// pages/index.tsx
 import React from "react";
 import Head from "next/head";
 import { ToastContainer } from "react-toastify";
@@ -25,29 +24,29 @@ export default function HomePage() {
           {/* Google Site Verification */}
           <meta name="google-site-verification" content="Sc3skyzNLhxTCKMDl4Eb2Txa8G3QiR6jbs3dGfycQ-M" />
 
-          {/* New Title */}
-          <title>Solradian - Cyberpunk Blockchain Revolution</title>
+          {/* Updated Title */}
+          <title>Solradian - Blockchain Revolution</title>
 
           {/* Updated Meta Description */}
           <meta
             name="description"
-            content="Enter the cyberpunk universe of Solradian: Where futuristic blockchain innovation meets edgy comic aesthetics. Create your own SPL token on Solana with cutting-edge developer tools."
+            content="Enter the innovative world of Solradian: Where futuristic blockchain innovation meets advanced developer tools. Create your own SPL token on Solana with cutting-edge features."
           />
 
-          {/* Meta Keywords */}
+          {/* Updated Meta Keywords */}
           <meta
             name="keywords"
-            content="Cyberpunk, Solana, SPL Token, Blockchain, Solradian, Developer Tools, Token Creation, Future, Roadmap"
+            content="Solana, SPL Token, Blockchain, Solradian, Developer Tools, Token Creation, Future, Roadmap"
           />
 
           {/* Canonical URL */}
           <link rel="canonical" href="https://solradian.com" />
 
           {/* Open Graph Tags */}
-          <meta property="og:title" content="Solradian - Cyberpunk Blockchain Revolution" />
+          <meta property="og:title" content="Solradian - Blockchain Revolution" />
           <meta
             property="og:description"
-            content="Enter the cyberpunk universe of Solradian. Create and launch your own SPL token on Solana with our advanced developer tools and futuristic design."
+            content="Enter the innovative world of Solradian. Create and launch your own SPL token on Solana with our advanced developer tools and modern design."
           />
           <meta property="og:url" content="https://solradian.com" />
           <meta property="og:type" content="website" />
@@ -55,10 +54,10 @@ export default function HomePage() {
 
           {/* Twitter Card Tags */}
           <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:title" content="Solradian - Cyberpunk Blockchain Revolution" />
+          <meta name="twitter:title" content="Solradian - Blockchain Revolution" />
           <meta
             name="twitter:description"
-            content="Step into the future with Solradian's cyberpunk aesthetic and blockchain innovation. Create your SPL token on Solana with ease and style."
+            content="Step into the future with Solradian's innovative blockchain solutions. Create your SPL token on Solana with ease and style."
           />
           <meta name="twitter:image" content="https://solradian.com/images/solradian.webp" />
 
@@ -72,7 +71,7 @@ export default function HomePage() {
                 "url": "https://solradian.com",
                 "name": "Solradian",
                 "description":
-                  "Enter the cyberpunk universe of Solradian. Explore futuristic blockchain innovation and create your own SPL token on Solana.",
+                  "Enter the innovative world of Solradian. Explore futuristic blockchain innovation and create your own SPL token on Solana.",
                 "publisher": {
                   "@type": "Organization",
                   "name": "Solradian",
@@ -100,10 +99,10 @@ export default function HomePage() {
         {/* Hero Section */}
         <section className="text-center py-12 bg-gradient-to-b from-gray-900 to-gray-800 animate-fade">
           <h2 className="text-4xl md:text-5xl font-extrabold mb-4 md:mb-6 text-pink-500 drop-shadow-xl">
-            Unleash Your Token in a Cyberpunk Universe
+            Unleash Your Token for the Future
           </h2>
           <p className="max-w-xl text-base md:text-lg mx-auto leading-relaxed mb-6 md:mb-8 text-gray-300">
-            Dive into the edgy world of Solradian. Create your own SPL token on Solana with our futuristic, developer-centric tools—designed for the next generation of blockchain projects.
+            Dive into the world of Solradian. Create your own SPL token on Solana with our futuristic, developer-centric tools—designed for the next generation of blockchain projects.
           </p>
           <a
             href="https://app.binance.com/uni-qr/cart/19329812857921?isst=1&l=en&r=86987631&uc=web_square_share_link&uco=iBxCMe2QYRNVBYGvj3RgbA&us=copylink"
@@ -152,32 +151,6 @@ export default function HomePage() {
                 Support thousands of transactions per second.
               </p>
             </div>
-          </div>
-        </section>
-
-        {/* Roadmap & Future Vision */}
-        <section className="py-16 bg-gray-800 animate-fade">
-          <div className="max-w-4xl mx-auto px-6">
-            <h3 className="text-4xl font-extrabold text-center text-pink-500 mb-8">
-              Roadmap & Future Vision
-            </h3>
-            <p className="text-gray-300 text-lg mb-6">
-              Solradian is on a relentless mission to revolutionize blockchain creation with a cyberpunk twist. Our roadmap outlines the strategic phases designed to empower developers and expand our ecosystem.
-            </p>
-            <ul className="list-disc list-inside text-gray-300 space-y-3">
-              <li>
-                <strong>Q2 2025:</strong> Beta launch of the full developer suite and enhanced UI/UX with comic-style visuals.
-              </li>
-              <li>
-                <strong>Q3 2025:</strong> Integration of advanced analytics and cross-chain functionality.
-              </li>
-              <li>
-                <strong>Q4 2025:</strong> Public release of Solradian Marketplace for token trading and NFT collaborations.
-              </li>
-              <li>
-                <strong>2026 and Beyond:</strong> Continuous upgrades, community-driven features, and strategic partnerships to further cement our position in the blockchain revolution.
-              </li>
-            </ul>
           </div>
         </section>
 
