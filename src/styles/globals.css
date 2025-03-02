@@ -21,48 +21,18 @@
     --accent: #0bc5ea;
   }
 }
-/* styles/globals.css or your main CSS file */
-body {
-  background-color: #1a1a1a; /* Dark background for the cyberpunk theme */
-  color: #e0e0e0; /* Light text color for contrast */
-  font-family: 'Roboto', sans-serif; /* Use a modern font */
-}
 
-.text-neon-cyan {
-  color: #00ffcc; /* Neon Cyan */
-  text-shadow: 0 0 5px #00ffcc, 0 0 10px #00ffcc, 0 0 15px #00ffcc;
-}
-
-.text-neon-pink {
-  color: #ff007f; /* Neon Pink */
-  text-shadow: 0 0 5px #ff007f, 0 0 10px #ff007f, 0 0 15px #ff007f;
-}
-
-.btn-glow {
-  box-shadow: 0 0 5px #00ffcc, 0 0 10px #00ffcc, 0 0 15px #00ffcc;
-  transition: all 0.3s ease;
-}
-
-.btn-glow:hover {
-  box-shadow: 0 0 10px #ff007f, 0 0 20px #ff007f, 0 0 30px #ff007f;
-}
-
-.animate-fade {
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-/* Add any additional styles you need for your components */
 /* Body Styling */
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'Inter', sans-serif;
+  transition: background 0.3s ease, color 0.3s ease;
 
+  /* Font Smoothing for Better Readability */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
 /* Keyframes untuk Animasi Fade In dan Slide Up */
 @keyframes fadeIn {
